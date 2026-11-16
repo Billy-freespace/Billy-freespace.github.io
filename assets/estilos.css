@@ -8,8 +8,9 @@
    5. Tarjetas: alumnos, temas, niveles
    6. Página de sección: cabecera, herramientas, ejercicios, solucionario
    7. Avisos y estados vacíos
-   8. Guía del profe
-   9. Utilidades, móvil e impresión
+   8. Acceso del profesor y panel
+   9. Guía del profe
+  10. Utilidades, móvil e impresión
    ========================================================================== */
 
 /* ---------------------------------------------------------------- 1. Tokens */
@@ -81,6 +82,10 @@
 
 * {
   margin: 0;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 html {
@@ -1057,7 +1062,207 @@ a.tarjeta:hover .flecha {
   font-size: 0.85em;
 }
 
-/* ----------------------------------------------------------- 8. Guía del profe */
+/* ------------------------------------- 8. Acceso del profesor y panel */
+.acceso {
+  display: grid;
+  place-items: center;
+  min-height: min(66vh, 560px);
+  padding-block: 1rem 2rem;
+}
+
+.acceso-caja {
+  display: grid;
+  justify-items: start;
+  gap: 0.8rem;
+  width: min(440px, 100%);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--linea);
+  border-radius: 20px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra-alta);
+}
+
+.acceso-icono {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 14px;
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.acceso-caja h1 {
+  font-size: 1.65rem;
+}
+
+.acceso-texto {
+  font-size: 0.95rem;
+  color: var(--tinta-2);
+}
+
+.acceso-form {
+  display: grid;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.acceso-form label,
+.form-clave label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.acceso-form input,
+.form-clave input {
+  width: 100%;
+  padding: 0.72rem 0.9rem;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 12px;
+  background: var(--papel);
+  color: var(--tinta);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.acceso-form input:focus,
+.form-clave input:focus {
+  border-color: var(--acento);
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+.acceso-form .boton {
+  justify-self: start;
+  margin-top: 0.25rem;
+}
+
+.acceso-error {
+  min-height: 1.25em;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--rosa);
+}
+
+.acceso-pista {
+  font-size: 0.85rem;
+  color: var(--tinta-3);
+}
+
+@keyframes sacudir {
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.sacudir {
+  animation: sacudir 300ms ease;
+}
+
+/* Panel */
+.rejilla-panel {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.tarjeta-panel {
+  gap: 0.85rem;
+}
+
+.panel-cabeza {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.enlace-alumno {
+  display: block;
+  padding: 0.5rem 0.65rem;
+  border: 1px dashed var(--linea-fuerte);
+  border-radius: 10px;
+  background: var(--papel-2);
+  font-family: var(--fuente-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+}
+
+.aviso-clave {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 1.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--linea);
+  border-left: 3px solid var(--ambar);
+  border-radius: 12px;
+  background: var(--ambar-suave);
+  color: var(--ambar);
+  font-size: 0.9rem;
+}
+
+.aviso-clave p {
+  margin: 0;
+  color: inherit;
+}
+
+.panel-clave {
+  margin-top: 2.25rem;
+}
+
+.form-clave {
+  display: grid;
+  gap: 0.5rem;
+  width: min(420px, 100%);
+}
+
+.form-clave .boton {
+  justify-self: start;
+  margin-top: 0.2rem;
+}
+
+.resultado-clave {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.resultado-clave:empty {
+  display: none;
+}
+
+.resultado-clave pre {
+  font-size: 0.74rem;
+}
+
+.resultado-error {
+  font-size: 0.9rem;
+  color: var(--rosa);
+}
+
+.nota-enlace {
+  margin-top: 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.85rem;
+  color: var(--tinta-3);
+}
+
+/* ----------------------------------------------------------- 9. Guía del profe */
 .pagina-guia main {
   padding-block: 2.5rem 4rem;
 }
@@ -1185,7 +1390,7 @@ td code {
   overflow-x: auto;
 }
 
-/* ------------------------------------------------- 9. Utilidades e impresión */
+/* ------------------------------------------------ 10. Utilidades e impresión */
 .salto-contenido {
   position: absolute;
   top: 0;

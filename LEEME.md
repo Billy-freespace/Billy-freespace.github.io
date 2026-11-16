@@ -6,19 +6,92 @@ avanzado), con **solucionario paso a paso escrito con [KaTeX](https://katex.org)
 
 Pensado para GitHub Pages: se sube al repositorio y queda publicado tal cual.
 
+**Cada alumno recibe el enlace de su propia página** y solo ve sus temas. La lista completa de
+alumnos está en un panel para el profesor protegido con una clave, y ninguna página de alumno
+tiene enlaces hacia ese panel ni hacia los demás.
+
 ---
 
 ## Cómo se navega
 
 ```
-Portada (lista de alumnos)
-   └── Alumno  →  sus temas
-          └── Tema  →  los tres niveles
-                 └── Sección  →  ejercicios + soluciones desplegables
+Panel del profesor (index.html, pide clave)
+   │   copias el enlace de un alumno
+   ▼
+Página del alumno (/alumno.html?alumno=ana)  →  sus temas
+        └── Tema  →  los tres niveles
+               └── Sección  →  ejercicios + soluciones desplegables
 ```
 
-Cada página es un archivo HTML independiente. Funciona abriendo `index.html` con doble clic,
+Cada página es un archivo HTML independiente y funciona abriendo los archivos con doble clic,
 sin servidor local.
+
+---
+
+## Compartir con los alumnos
+
+1. Entra a `index.html` y escribe la clave del panel (la de fábrica es `profesor`; cámbiala).
+2. En la tarjeta de cada alumno, usa **Copiar enlace**.
+3. Envía ese enlace. El alumno verá únicamente sus temas.
+
+El enlace tiene esta forma:
+
+```
+https://TU-USUARIO.github.io/web-math-exercises/alumno.html?alumno=ana
+```
+
+### La clave del panel
+
+Se guarda como hash SHA-256 en `assets/js/clave.js`. Para cambiarla tienes dos caminos:
+
+- desde el panel, sección **Cambiar la clave** (te da el hash listo para pegar);
+- desde la terminal: `node herramientas/clave.mjs "mi clave nueva"`.
+
+Usa una clave larga (12 caracteres o una frase) y no la reutilices en otro sitio.
+
+
+---
+
+## Privacidad: qué protege y qué no
+
+Conviene tenerlo claro desde el principio.
+
+**Lo que sí hace este sitio**
+
+- Cada alumno entra por su propio enlace y su página no enlaza al panel ni a los demás alumnos.
+- El panel con la lista de alumnos pide una clave.
+- Todas las páginas llevan `noindex` y hay un `robots.txt`, así que no aparecen en Google.
+
+**Lo que no hace**
+
+- GitHub Pages es un hosting público: **cualquier archivo del sitio se puede abrir si se conoce su
+  dirección**.
+- La clave del panel se comprueba en el navegador, así que se puede saltar leyendo el código.
+- La lista de alumnos y las rutas están en `assets/js/contenido.js`, que es un archivo público.
+- Si el repositorio es público, cualquiera puede ver todos los archivos desde GitHub.
+
+Dicho de otro modo: esto evita que un alumno **se tope** con los ejercicios de sus compañeros,
+pero no detiene a alguien que se proponga mirarlos.
+
+**Recomendaciones prácticas**
+
+- Publica solo lo que no te importaría que se viera: nombre, curso y ejercicios. Nada sensible.
+- Usa una clave larga y distinta de las que usas en otros servicios.
+- Si quieres, mantén el repositorio privado. Ojo: GitHub Pages desde un repositorio privado
+  requiere un plan de pago, y el sitio publicado sigue siendo público.
+
+**Si necesitas privacidad de verdad**
+
+La única solución real es que el servidor exija identificarse antes de entregar el contenido.
+Alternativas:
+
+- **Cloudflare Access** delante del sitio: el alumno entra con un código que recibe por correo.
+  Tiene plan gratuito para equipos pequeños y no hay que tocar el código del cuaderno.
+- **Un hosting con contraseña**, por ejemplo Netlify en sus planes pagos.
+- **Páginas cifradas** antes de publicarlas (por ejemplo PageCrypt): sin la clave, el archivo no
+  se puede leer ni mirando el código.
+- **Un aula virtual con cuentas** (Google Classroom, Moodle) si ya la usas: el control de acceso
+  lo hace la plataforma.
 
 ---
 
@@ -37,7 +110,9 @@ sin servidor local.
 2. En GitHub entra a **Settings → Pages**.
 3. En *Source* elige **Deploy from a branch**, rama `main` y carpeta `/ (root)`. Guarda.
 4. En uno o dos minutos el sitio estará en
-   `https://TU-USUARIO.github.io/web-math-exercises/`.
+   `https://TU-USUARIO.github.io/web-math-exercises/`. Esa dirección es el **panel del
+   profesor** y pide la clave; a los alumnos les compartes el enlace de su página, que se copia
+   desde el panel.
 
 > Para actualizar el sitio basta con hacer `git add . && git commit -m "..." && git push`.
 
@@ -47,15 +122,18 @@ sin servidor local.
 
 ```
 web-math-exercises/
-├── index.html              ← portada: lista de alumnos
-├── alumno.html             ← temas de un alumno
+├── index.html              ← panel del profesor (pide clave)
+├── robots.txt              ← pide a los buscadores que no indexen el sitio
+├── alumno.html             ← página personal de un alumno
 ├── tema.html               ← los tres niveles de un tema
-├── guia.html               ← guía para el profe (la misma información, en el sitio)
+├── guia.html               ← guía para el profe (protegida con la misma clave)
 ├── assets/
 │   ├── estilos.css         ← colores, tipografía y diseño
 │   ├── favicon.svg
 │   └── js/
 │       ├── contenido.js    ← ★ el único archivo que hay que editar para ordenar
+│       ├── clave.js        ← clave del panel (hash)
+│       ├── acceso.js       ← pantalla de acceso (no editar)
 │       ├── comun.js        ← utilidades (no editar)
 │       ├── app.js          ← vistas de navegación (no editar)
 │       └── seccion.js      ← soluciones y fórmulas (no editar)
@@ -230,6 +308,7 @@ Comprueba identificadores repetidos, archivos que faltan, archivos sueltos que n
 - **Colores, tipografía y espaciados**: variables al inicio de `assets/estilos.css`.
 - **Textos de los niveles** («Básico», «Intermedio», «Avanzado» y sus descripciones): objeto
   `NIVELES` en `assets/js/comun.js`.
+- **Clave del panel**: `assets/js/clave.js` (mejor cámbiala desde el panel).
 - **Modo oscuro**: se activa solo según la preferencia del sistema.
 
 ## Preguntas frecuentes
@@ -238,8 +317,17 @@ Comprueba identificadores repetidos, archivos que faltan, archivos sueltos que n
 desde un CDN. Si necesitas que funcione sin conexión, descarga KaTeX y cambia las rutas de
 `<link>` y `<script>` por archivos locales en `assets/`.
 
-**¿Puedo usar esto sin JavaScript?** No, la navegación y el renderizado de fórmulas lo
-necesitan.
+**¿Puedo usar esto sin JavaScript?** No, la navegación, el renderizado de fórmulas y la clave
+lo necesitan.
+
+**¿Puedo poner una clave distinta a cada alumno?** Se puede simular, pero en un sitio estático no
+aporta seguridad: los archivos siguen siendo públicos y la comprobación ocurre en el navegador.
+Lo que sí puedes hacer es dar a cada alumno un enlace distinto (ya está resuelto). Para claves por
+alumno de verdad hace falta un servidor que autentique (ver «Privacidad»).
+
+**¿Y si un alumno cambia `ana` por `beto` en la dirección?** Verá la página de Beto. Por eso el
+panel no está enlazado y conviene que los nombres de los identificadores no sean adivinables si te
+preocupa ese caso; aun así, en GitHub Pages no hay forma de impedirlo del todo.
 
 **Borrar los ejemplos**: elimina los bloques de Ana y Beto en `contenido.js` y sus carpetas
 dentro de `contenido/`.

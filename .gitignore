@@ -1,5 +1,5 @@
-# Carpeta de revisión local (capturas y pruebas). No se publica.
-.qa/
+# Carpetas de revisión local (capturas y pruebas). No se publican.
+.qa*/
 
 # Sistema
 .DS_Store

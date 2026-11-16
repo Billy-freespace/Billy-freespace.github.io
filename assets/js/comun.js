@@ -105,6 +105,36 @@ const Sitio = (() => {
 
   const param = (nombre) => new URLSearchParams(window.location.search).get(nombre) || "";
 
+  /* --- Sesión del profesor ------------------------------------------------
+     Solo se recuerda mientras la pestaña esté abierta. Es una comodidad para
+     el profe, no un mecanismo de seguridad (ver LEEME.md). */
+
+  const CLAVE_SESION = "acceso-profesor";
+
+  function hayAccesoProfesor() {
+    try {
+      return sessionStorage.getItem(CLAVE_SESION) === "1";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function recordarAcceso() {
+    try {
+      sessionStorage.setItem(CLAVE_SESION, "1");
+    } catch (error) {
+      /* sin almacenamiento: el acceso dura solo esta página */
+    }
+  }
+
+  function olvidarAcceso() {
+    try {
+      sessionStorage.removeItem(CLAVE_SESION);
+    } catch (error) {
+      /* nada que borrar */
+    }
+  }
+
   /* --- Búsquedas --------------------------------------------------------- */
 
   const buscarAlumno = (id) => alumnos.find((alumno) => alumno.id === id) || null;
@@ -135,21 +165,30 @@ const Sitio = (() => {
 
   /* --- Cabecera y migas de pan ------------------------------------------- */
 
-  function pintarCabecera() {
+  function pintarCabecera(opciones = {}) {
     const contenedor = document.getElementById("cabecera-sitio");
     if (!contenedor) return;
+
+    const { alumno = null } = opciones;
+    const destinoMarca = alumno ? urlAlumno(alumno.id) : urlInicio();
+
+    /* Los alumnos no ven ninguna salida hacia el panel ni hacia otros alumnos.
+       El profe, con la sesión abierta, sí tiene sus accesos. */
+    const navProfesor = hayAccesoProfesor()
+      ? `<nav class="cabecera-nav" aria-label="Navegación del profesor">
+           <a href="${urlInicio()}">Panel</a>
+           <a href="${urlGuia()}">Guía</a>
+         </nav>`
+      : "";
 
     contenedor.className = "cabecera-sitio";
     contenedor.innerHTML = `
       <div class="contenedor cabecera-interior">
-        <a class="marca" href="${urlInicio()}">
+        <a class="marca" href="${destinoMarca}">
           <span class="marca-icono" aria-hidden="true">∑</span>
           <span class="marca-texto">${escapar(sitio.nombre)}</span>
         </a>
-        <nav class="cabecera-nav" aria-label="Navegación del sitio">
-          <a href="${urlInicio()}">Alumnos</a>
-          <a href="${urlGuia()}"><span class="nav-largo">Guía del profe</span><span class="nav-corto">Guía</span></a>
-        </nav>
+        ${navProfesor}
       </div>`;
 
     contenedor.querySelectorAll(".cabecera-nav a").forEach((enlaceNav) => {
@@ -190,5 +229,8 @@ const Sitio = (() => {
     tono,
     pintarCabecera,
     migas,
+    hayAccesoProfesor,
+    recordarAcceso,
+    olvidarAcceso,
   };
 })();

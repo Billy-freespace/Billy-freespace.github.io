@@ -53,6 +53,27 @@ if (!alumnos.length) {
   aviso("Todavía no hay alumnos en contenido.js.");
 }
 
+/* --- 1b. Clave del panel ------------------------------------------------- */
+
+const HASH_POR_DEFECTO = "48a8d9ca65d4ffed5d24d09cde13ef76320e7d4ebf468bcfcb5c4a17f87785a9";
+
+try {
+  const codigoClave = fs.readFileSync(path.join(RAIZ, "assets", "js", "clave.js"), "utf8");
+  const ACCESO = new Function(`${codigoClave}\nreturn ACCESO;`)();
+
+  if (!ACCESO || !/^[a-f0-9]{64}$/.test(String(ACCESO.hash || "").toLowerCase())) {
+    error("assets/js/clave.js no tiene un hash SHA-256 válido (64 caracteres hexadecimales).");
+  } else if (ACCESO.hash.toLowerCase() === HASH_POR_DEFECTO) {
+    aviso('El panel sigue con la clave de ejemplo («profesor»). Cámbiala antes de publicar.');
+  }
+} catch (e) {
+  error("No se pudo leer assets/js/clave.js: " + e.message);
+}
+
+if (!fs.existsSync(path.join(RAIZ, "robots.txt"))) {
+  aviso("Falta robots.txt en la raíz del proyecto.");
+}
+
 /* --- 2. Revisar alumnos y temas ------------------------------------------ */
 
 const idsAlumnos = new Set();
@@ -112,6 +133,10 @@ for (const alumno of alumnos) {
         error(`En ${relativo} el <body> debería tener ${esperado}`);
       }
 
+      if (!html.includes('name="robots"')) {
+        aviso(`${relativo} no tiene la etiqueta noindex.`);
+      }
+
       const ejercicios = (html.match(/<li class="ejercicio">/g) || []).length;
       const soluciones = (html.match(/<details class="solucion">/g) || []).length;
 
@@ -155,6 +180,11 @@ console.log(`\n  ${alumnos.length} alumno(s) · ${archivosEsperados.size} archiv
 if (errores.length) {
   console.log(`  ${errores.length} error(es) que conviene corregir antes de publicar.\n`);
   process.exit(1);
+}
+
+if (avisos.length) {
+  console.log("  Hay avisos que conviene revisar antes de publicar.\n");
+  process.exit(0);
 }
 
 console.log("  Listo para subir a GitHub.\n");

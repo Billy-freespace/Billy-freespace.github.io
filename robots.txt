@@ -1,0 +1,4 @@
+# Este sitio es material de clase: no queremos que aparezca en buscadores.
+# Es una petición, no una protección: los archivos siguen siendo públicos.
+User-agent: *
+Disallow: /

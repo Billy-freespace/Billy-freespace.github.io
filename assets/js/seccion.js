@@ -12,12 +12,13 @@
 (() => {
   "use strict";
 
-  Sitio.pintarCabecera();
-
   const [alumnoId, temaId, nivelId] = (document.body.dataset.seccion || "").split("/");
   const alumno = Sitio.buscarAlumno(alumnoId);
   const tema = alumno ? Sitio.buscarTema(alumno.id, temaId) : null;
   const nivel = Sitio.NIVELES[nivelId];
+
+  /* La marca de la cabecera vuelve a la página del alumno, nunca al panel. */
+  Sitio.pintarCabecera({ alumno });
 
   const encabezado = document.getElementById("encabezado-seccion");
   const soluciones = Array.from(document.querySelectorAll("details.solucion"));
@@ -29,8 +30,7 @@
       document.title = `${nivel.etiqueta} · ${tema.titulo} · ${alumno.nombre}`;
       encabezado.innerHTML = `
         ${Sitio.migas([
-          { texto: "Alumnos", href: Sitio.urlInicio() },
-          { texto: alumno.nombre, href: Sitio.urlAlumno(alumno.id) },
+          { texto: "Mis ejercicios", href: Sitio.urlAlumno(alumno.id) },
           { texto: tema.titulo, href: Sitio.urlTema(alumno.id, tema.id) },
           { texto: nivel.etiqueta },
         ])}
