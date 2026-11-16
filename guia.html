@@ -54,24 +54,26 @@
 ├── alumno.html             ← página personal de un alumno
 ├── tema.html               ← los 3 niveles de un tema
 ├── guia.html               ← esta página (para el profe)
+├── solucionarios.html      ← activar/desactivar soluciones (para el profe)
 ├── assets/
 │   ├── estilos.css         ← colores y diseño
 │   └── js/
 │       ├── contenido.js    ← ★ aquí se ordena todo
+│       ├── soluciones.js   ← qué soluciones están desactivadas
 │       ├── clave.js        ← clave del panel
 │       ├── acceso.js
 │       ├── comun.js
 │       ├── app.js
 │       └── seccion.js
 ├── contenido/
-│   ├── ana/
+│   ├── k7m2p9x4/           ← carpeta de un alumno (su código)
 │   │   ├── fracciones/
 │   │   │   ├── basico.html
 │   │   │   ├── intermedio.html
 │   │   │   └── avanzado.html
 │   │   └── ecuaciones/
 │   │       └── ...
-│   └── beto/
+│   └── zhuxqqwb/
 │       └── proporcionalidad/
 │           └── ...
 └── plantillas/
@@ -88,15 +90,22 @@
           <span class="paso-numero" aria-hidden="true">1</span>
           <h2 id="paso-alumno">Agregar un alumno</h2>
         </div>
-        <p>Abre <code>assets/js/contenido.js</code> y agrega un bloque dentro de <code>alumnos</code>:</p>
+        <p>
+          En el panel, usa <strong>Generar código</strong>: te da un código como
+          <code>k7m2p9x4</code> y el bloque listo para copiar. Luego pégalo dentro de
+          <code>alumnos</code>, en <code>assets/js/contenido.js</code>:
+        </p>
         <pre><code>{
-  id: "carla",                 // minúsculas, sin tildes ni espacios
+  id: "k7m2p9x4",              // el código: no lleva el nombre del alumno
   nombre: "Carla Mendoza",
   curso: "3.º de secundaria",  // opcional
   nota: "Números enteros",     // opcional
   temas: []                    // se llena en el paso 2
 }</code></pre>
-        <p>El <code>id</code> también será el nombre de su carpeta en <code>contenido/</code>.</p>
+        <p>
+          Ese código es también el nombre de su carpeta en <code>contenido/</code> y la parte
+          del enlace que ven los alumnos, así que no contiene su nombre.
+        </p>
       </section>
 
       <section class="paso" aria-labelledby="paso-tema">
@@ -105,7 +114,7 @@
           <h2 id="paso-tema">Agregar un tema</h2>
         </div>
         <ol>
-          <li>Crea la carpeta <code>contenido/carla/enteros/</code>.</li>
+          <li>Crea la carpeta <code>contenido/k7m2p9x4/enteros/</code>.</li>
           <li>
             Copia <code>plantillas/seccion.html</code> tres veces dentro de ella y renombra las
             copias como <code>basico.html</code>, <code>intermedio.html</code> y
@@ -114,7 +123,7 @@
           <li>
             En cada copia cambia el <code>data-seccion</code> del <code>&lt;body&gt;</code> y el
             <code>&lt;title&gt;</code>. Por ejemplo:
-            <code>data-seccion="carla/enteros/basico"</code>.
+            <code>data-seccion="k7m2p9x4/enteros/basico"</code>.
           </li>
           <li>Agrega el tema en el alumno, dentro de <code>temas</code>:</li>
         </ol>
@@ -211,7 +220,7 @@ $$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
           </li>
         </ol>
         <p>El enlace tiene esta forma:</p>
-        <pre><code>https://tu-usuario.github.io/web-math-exercises/alumno.html?alumno=ana</code></pre>
+        <pre><code>https://tu-usuario.github.io/web-math-exercises/alumno.html?alumno=k7m2p9x4</code></pre>
         <p>
           La clave está en <code>assets/js/clave.js</code> y se puede cambiar desde el panel
           (sección «Cambiar la clave»). Evita reutilizar una clave que uses en otro sitio.
@@ -227,9 +236,38 @@ $$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
         </div>
       </section>
 
-      <section class="paso" aria-labelledby="paso-publicar">
+      <section class="paso" aria-labelledby="paso-soluciones">
         <div class="paso-cabeza">
           <span class="paso-numero" aria-hidden="true">6</span>
+          <h2 id="paso-soluciones">Activar o desactivar soluciones</h2>
+        </div>
+        <p>
+          En el panel, abre <a href="solucionarios.html">Solucionarios</a>. Elige un alumno,
+          abre una sección y verás cada ejercicio con su casilla: si la desmarcas, ese ejercicio
+          se queda sin solución para los alumnos (el resto no cambia).
+        </p>
+        <ol>
+          <li>Haz los cambios que quieras (también puedes usar «Activar todas» o «Desactivar todas»).</li>
+          <li>Pulsa <strong>Descargar soluciones.js</strong> (o «Copiar contenido»).</li>
+          <li>Reemplaza con ese archivo <code>assets/js/soluciones.js</code> y sube el cambio.</li>
+        </ol>
+        <p>
+          El panel reconoce cada ejercicio por su enunciado: si cambias el texto de un enunciado,
+          ese interruptor vuelve a «mostrar». Los alumnos pueden tardar unos minutos en ver el
+          cambio (el navegador guarda los archivos en caché).
+        </p>
+        <div class="aviso-clave">
+          <strong>Los interruptores necesitan un servidor.</strong>
+          <p>
+            Si abres el panel con doble clic (<code>file://</code>) no puede leer los archivos de
+            ejercicios. Ábrelo desde GitHub Pages o con <code>python3 -m http.server</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-publicar">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">7</span>
           <h2 id="paso-publicar">Revisar y publicar</h2>
         </div>
         <ul>
@@ -256,7 +294,7 @@ $$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
 
       <section class="paso" aria-labelledby="paso-privacidad">
         <div class="paso-cabeza">
-          <span class="paso-numero" aria-hidden="true">7</span>
+          <span class="paso-numero" aria-hidden="true">8</span>
           <h2 id="paso-privacidad">Si necesitas privacidad de verdad</h2>
         </div>
         <p>

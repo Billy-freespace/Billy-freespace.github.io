@@ -137,6 +137,10 @@ for (const alumno of alumnos) {
         aviso(`${relativo} no tiene la etiqueta noindex.`);
       }
 
+      if (!html.includes("soluciones.js")) {
+        aviso(`${relativo} no carga soluciones.js: los interruptores no funcionarán ahí.`);
+      }
+
       const ejercicios = (html.match(/<li class="ejercicio">/g) || []).length;
       const soluciones = (html.match(/<details class="solucion">/g) || []).length;
 
@@ -146,6 +150,36 @@ for (const alumno of alumnos) {
         aviso(`${relativo} tiene ${ejercicios} ejercicios, pero ninguno con solución.`);
       }
     }
+  }
+}
+
+/* --- 2b. Claves del solucionario ----------------------------------------- */
+
+let soluciones = {};
+try {
+  const codigoSoluciones = fs.readFileSync(path.join(RAIZ, "assets", "js", "soluciones.js"), "utf8");
+  soluciones = new Function(`${codigoSoluciones}\nreturn SOLUCIONES;`)() || {};
+} catch (e) {
+  error("No se pudo leer assets/js/soluciones.js: " + e.message);
+}
+
+const seccionesDeclaradas = new Set(
+  [...archivosEsperados].map((ruta) =>
+    path
+      .relative(path.join(RAIZ, "contenido"), path.join(RAIZ, ruta))
+      .replace(/\.html$/, "")
+      .split(path.sep)
+      .join("/")
+  )
+);
+
+for (const [clave, valor] of Object.entries(soluciones)) {
+  const [seccion] = String(clave).split("#");
+  if (!seccionesDeclaradas.has(seccion)) {
+    aviso(`soluciones.js menciona una sección que no existe: "${seccion}".`);
+  }
+  if (valor !== false) {
+    aviso(`En soluciones.js la clave "${clave}" debería valer false.`);
   }
 }
 

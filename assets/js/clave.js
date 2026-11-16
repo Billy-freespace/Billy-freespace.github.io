@@ -16,7 +16,7 @@
 
 const ACCESO = {
   /* SHA-256 de la clave. No pongas la clave en texto plano. */
-  hash: "48a8d9ca65d4ffed5d24d09cde13ef76320e7d4ebf468bcfcb5c4a17f87785a9",
+  hash: "b1d31fa412cb6d233016098a9b630f923fee6fa908dc448c8bd33920585149a8",
 
   /* Texto opcional de ayuda que aparece bajo el campo de la clave. */
   pista: "",

@@ -10,6 +10,9 @@ Pensado para GitHub Pages: se sube al repositorio y queda publicado tal cual.
 alumnos está en un panel para el profesor protegido con una clave, y ninguna página de alumno
 tiene enlaces hacia ese panel ni hacia los demás.
 
+Los alumnos se identifican con un **código** (`k7m2p9x4`), no con su nombre, así que sus nombres
+no aparecen en ninguna URL.
+
 ---
 
 ## Cómo se navega
@@ -18,7 +21,7 @@ tiene enlaces hacia ese panel ni hacia los demás.
 Panel del profesor (index.html, pide clave)
    │   copias el enlace de un alumno
    ▼
-Página del alumno (/alumno.html?alumno=ana)  →  sus temas
+Página del alumno (/alumno.html?alumno=k7m2p9x4)  →  sus temas
         └── Tema  →  los tres niveles
                └── Sección  →  ejercicios + soluciones desplegables
 ```
@@ -37,7 +40,7 @@ sin servidor local.
 El enlace tiene esta forma:
 
 ```
-https://TU-USUARIO.github.io/web-math-exercises/alumno.html?alumno=ana
+https://TU-USUARIO.github.io/web-math-exercises/alumno.html?alumno=k7m2p9x4
 ```
 
 ### La clave del panel
@@ -50,6 +53,22 @@ Se guarda como hash SHA-256 en `assets/js/clave.js`. Para cambiarla tienes dos c
 Usa una clave larga (12 caracteres o una frase) y no la reutilices en otro sitio.
 
 
+## Activar o desactivar soluciones
+
+Cada ejercicio puede mostrar u ocultar su solución por separado.
+
+1. En el panel, entra a **Solucionarios**.
+2. Abre una sección: verás cada ejercicio con una casilla (marcada = el alumno ve la solución).
+3. Al terminar, pulsa **Descargar soluciones.js** (o **Copiar contenido**).
+4. Reemplaza `assets/js/soluciones.js` con ese archivo y sube el cambio.
+
+El estado queda en `assets/js/soluciones.js`, así el sitio sigue siendo estático. El panel
+reconoce cada ejercicio por su enunciado: si cambias el texto de un enunciado, ese interruptor
+vuelve a «mostrar».
+
+> Los interruptores necesitan abrir el panel por HTTP: GitHub Pages o un servidor local
+> (`python3 -m http.server`). Abriéndolo con doble clic no puede leer los archivos de ejercicios.
+
 ---
 
 ## Privacidad: qué protege y qué no
@@ -59,6 +78,7 @@ Conviene tenerlo claro desde el principio.
 **Lo que sí hace este sitio**
 
 - Cada alumno entra por su propio enlace y su página no enlaza al panel ni a los demás alumnos.
+- Los identificadores son códigos, así que los nombres no aparecen en las URLs.
 - El panel con la lista de alumnos pide una clave.
 - Todas las páginas llevan `noindex` y hay un `robots.txt`, así que no aparecen en Google.
 
@@ -67,7 +87,8 @@ Conviene tenerlo claro desde el principio.
 - GitHub Pages es un hosting público: **cualquier archivo del sitio se puede abrir si se conoce su
   dirección**.
 - La clave del panel se comprueba en el navegador, así que se puede saltar leyendo el código.
-- La lista de alumnos y las rutas están en `assets/js/contenido.js`, que es un archivo público.
+- La lista de alumnos, sus nombres y sus códigos están en `assets/js/contenido.js`, que es un
+  archivo público.
 - Si el repositorio es público, cualquiera puede ver todos los archivos desde GitHub.
 
 Dicho de otro modo: esto evita que un alumno **se tope** con los ejercicios de sus compañeros,
@@ -127,25 +148,28 @@ web-math-exercises/
 ├── alumno.html             ← página personal de un alumno
 ├── tema.html               ← los tres niveles de un tema
 ├── guia.html               ← guía para el profe (protegida con la misma clave)
+├── solucionarios.html      ← activar/desactivar soluciones (para el profe)
 ├── assets/
 │   ├── estilos.css         ← colores, tipografía y diseño
 │   ├── favicon.svg
 │   └── js/
 │       ├── contenido.js    ← ★ el único archivo que hay que editar para ordenar
+│       ├── soluciones.js   ← qué soluciones están desactivadas
 │       ├── clave.js        ← clave del panel (hash)
 │       ├── acceso.js       ← pantalla de acceso (no editar)
 │       ├── comun.js        ← utilidades (no editar)
 │       ├── app.js          ← vistas de navegación (no editar)
-│       └── seccion.js      ← soluciones y fórmulas (no editar)
+│       ├── solucionarios.js← panel de solucionarios (no editar)
+│       └── seccion.js      ← fórmulas e interruptores (no editar)
 ├── contenido/
-│   ├── ana/
+│   ├── k7m2p9x4/           ← carpeta de un alumno (su código)
 │   │   ├── fracciones/
 │   │   │   ├── basico.html
 │   │   │   ├── intermedio.html
 │   │   │   └── avanzado.html
 │   │   └── ecuaciones/
 │   │       └── ...
-│   └── beto/
+│   └── zhuxqqwb/
 │       └── proporcionalidad/
 │           └── ...
 ├── plantillas/
@@ -156,7 +180,7 @@ web-math-exercises/
 
 La idea es simple:
 
-- **un alumno = una carpeta** dentro de `contenido/`
+- **un alumno = una carpeta** dentro de `contenido/`, nombrada con su código
 - **un tema = una subcarpeta**
 - **un nivel = un archivo** llamado `basico.html`, `intermedio.html` o `avanzado.html`
 
@@ -172,7 +196,7 @@ En `assets/js/contenido.js`, dentro de `alumnos`:
 
 ```js
 {
-  id: "carla",                 // minúsculas, sin tildes ni espacios
+  id: "k7m2p9x4",              // el código: genera uno desde el panel
   nombre: "Carla Mendoza",
   curso: "3.º de secundaria",  // opcional
   nota: "Números enteros",     // opcional
@@ -180,16 +204,17 @@ En `assets/js/contenido.js`, dentro de `alumnos`:
 }
 ```
 
-El `id` será también el nombre de su carpeta en `contenido/`.
+El `id` será también el nombre de su carpeta en `contenido/`, y el enlace que recibe el alumno.
+Usa **Generar código** en el panel: te da el código y el bloque listo para copiar.
 
 ### Agregar un tema
 
-1. Crea la carpeta `contenido/carla/enteros/`.
+1. Crea la carpeta `contenido/k7m2p9x4/enteros/`.
 2. Copia `plantillas/seccion.html` tres veces dentro y renombra las copias como
    `basico.html`, `intermedio.html` y `avanzado.html`.
 3. En cada copia cambia:
    - el `<title>`,
-   - `data-seccion` del `<body>` (por ejemplo `data-seccion="carla/enteros/basico"`),
+   - `data-seccion` del `<body>` (por ejemplo `data-seccion="k7m2p9x4/enteros/basico"`),
    - el contenido entre los comentarios `ESCRIBE AQUÍ` y `FIN DE LOS EJERCICIOS`.
 4. Declara el tema en el alumno:
 
@@ -325,9 +350,9 @@ aporta seguridad: los archivos siguen siendo públicos y la comprobación ocurre
 Lo que sí puedes hacer es dar a cada alumno un enlace distinto (ya está resuelto). Para claves por
 alumno de verdad hace falta un servidor que autentique (ver «Privacidad»).
 
-**¿Y si un alumno cambia `ana` por `beto` en la dirección?** Verá la página de Beto. Por eso el
-panel no está enlazado y conviene que los nombres de los identificadores no sean adivinables si te
-preocupa ese caso; aun así, en GitHub Pages no hay forma de impedirlo del todo.
+**¿Y si un alumno cambia el código de su enlace por el de otro?** Necesitaría conocer el código
+del otro, que no tiene relación con su nombre. Si alguien lee `assets/js/contenido.js` puede verlos
+todos, y en GitHub Pages no hay forma de impedirlo del todo (ver «Privacidad»).
 
 **Borrar los ejemplos**: elimina los bloques de Ana y Beto en `contenido.js` y sus carpetas
 dentro de `contenido/`.

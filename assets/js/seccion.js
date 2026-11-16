@@ -20,8 +20,11 @@
   /* La marca de la cabecera vuelve a la página del alumno, nunca al panel. */
   Sitio.pintarCabecera({ alumno });
 
+  /* Las soluciones apagadas se ocultan antes de contar y de escribir fórmulas. */
+  aplicarInterruptoresDeSoluciones();
+
   const encabezado = document.getElementById("encabezado-seccion");
-  const soluciones = Array.from(document.querySelectorAll("details.solucion"));
+  const soluciones = Array.from(document.querySelectorAll("details.solucion:not([hidden])"));
   const ejercicios = document.querySelectorAll(".ejercicio");
   const contextoValido = Boolean(alumno && tema && nivel);
 
@@ -41,7 +44,7 @@
           <div class="meta-fila">
             <span class="pildora">${Sitio.escapar(alumno.nombre)}</span>
             <span class="pildora">${ejercicios.length} ejercicio${ejercicios.length === 1 ? "" : "s"}${
-              soluciones.length ? ` · ${soluciones.length} con solución` : ""
+              soluciones.length ? ` · ${soluciones.length} con solución` : " · sin soluciones"
             }</span>
           </div>
         </header>`;
@@ -126,6 +129,25 @@
     window.addEventListener("beforeprint", () => detalles.forEach((detalle) => (detalle.open = true)));
 
     sincronizar();
+  }
+
+  /* ------------------------------------------- Interruptores del solucionario */
+  function aplicarInterruptoresDeSoluciones() {
+    const estado = typeof SOLUCIONES !== "undefined" && SOLUCIONES ? SOLUCIONES : {};
+    const seccion = document.body.dataset.seccion || "";
+
+    document.querySelectorAll(".ejercicio").forEach((ejercicio) => {
+      const detalle = ejercicio.querySelector("details.solucion");
+      if (!detalle) return;
+
+      const enunciado = ejercicio.querySelector(".enunciado");
+      const clave = `${seccion}#${Sitio.claveEjercicio(enunciado ? enunciado.textContent : ejercicio.textContent)}`;
+
+      if (estado[clave] === false) {
+        detalle.hidden = true;
+        ejercicio.classList.add("solucion-apagada");
+      }
+    });
   }
 
   /* ---------------------------------------------------------------- KaTeX */

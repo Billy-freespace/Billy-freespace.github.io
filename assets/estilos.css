@@ -1262,6 +1262,187 @@ a.tarjeta:hover .flecha {
   color: var(--tinta-3);
 }
 
+.panel-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.2rem;
+}
+
+/* Solucionarios: interruptor por ejercicio */
+.pagina-solucionarios .barra-soluciones {
+  position: sticky;
+  top: calc(var(--alto-cabecera) + 0.5rem);
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  background: var(--tarjeta);
+  background: color-mix(in srgb, var(--tarjeta) 94%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--sombra);
+}
+
+.barra-soluciones p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--tinta-2);
+}
+
+.barra-soluciones strong {
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+.nota-exportar {
+  min-height: 1.3rem;
+  margin: 0.45rem 0 1.8rem;
+  font-size: 0.85rem;
+  color: var(--verde);
+}
+
+.previa-soluciones {
+  margin-bottom: 1.6rem;
+}
+
+.panel-grupo {
+  margin-bottom: 2.2rem;
+}
+
+.panel-grupo-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.panel-grupo-cabeza h2 {
+  font-size: 1.3rem;
+}
+
+.seccion-soluciones {
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--tarjeta);
+  overflow: hidden;
+}
+
+.seccion-soluciones > summary {
+  display: grid;
+  grid-template-columns: 1.35rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  list-style: none;
+  cursor: pointer;
+}
+
+.seccion-soluciones > summary::-webkit-details-marker {
+  display: none;
+}
+
+.seccion-soluciones > summary::before {
+  content: "›";
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--tinta-3);
+  transition: transform var(--transicion);
+}
+
+.seccion-soluciones[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.seccion-nombre {
+  font-size: 0.95rem;
+  color: var(--tinta-2);
+}
+
+.seccion-nombre strong {
+  color: var(--tinta);
+}
+
+.seccion-estado {
+  font-size: 0.78rem;
+  color: var(--tinta-3);
+  text-align: right;
+}
+
+.seccion-cuerpo {
+  padding: 0.2rem 1rem 1rem;
+  border-top: 1px solid var(--linea);
+  overflow-x: auto;
+}
+
+.mini-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0;
+}
+
+.lista-soluciones {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fila-solucion {
+  border-top: 1px solid var(--linea);
+}
+
+.fila-solucion:first-child {
+  border-top: 0;
+}
+
+.fila-check {
+  display: grid;
+  grid-template-columns: auto 1.4rem 1fr;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0;
+  cursor: pointer;
+}
+
+.fila-check input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--acento);
+  cursor: pointer;
+}
+
+.fila-num {
+  font-size: 0.75rem;
+  color: var(--tinta-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.fila-enunciado {
+  font-size: 0.92rem;
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+}
+
+.fila-enunciado .katex {
+  font-size: 1em;
+}
+
+.mensaje-soluciones {
+  padding: 0.8rem 0;
+  font-size: 0.9rem;
+  color: var(--tinta-2);
+}
+
 /* ----------------------------------------------------------- 9. Guía del profe */
 .pagina-guia main {
   padding-block: 2.5rem 4rem;

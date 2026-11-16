@@ -30,7 +30,7 @@ const CONTENIDO = {
   /* --- Alumnos ----------------------------------------------------------- */
   alumnos: [
     {
-      id: "ana",
+      id: "ykfiv2iw",
       nombre: "Ana Torres",
       curso: "4.º de secundaria",
       nota: "Fracciones y ecuaciones de primer grado",
@@ -48,7 +48,7 @@ const CONTENIDO = {
       ],
     },
     {
-      id: "beto",
+      id: "zhuxqqwb",
       nombre: "Beto Ramírez",
       curso: "2.º de secundaria",
       nota: "Proporcionalidad, porcentajes y repartos",

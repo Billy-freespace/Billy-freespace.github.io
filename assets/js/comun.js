@@ -97,6 +97,7 @@ const Sitio = (() => {
   const enlace = (ruta) => BASE + ruta;
   const urlInicio = () => enlace("index.html");
   const urlGuia = () => enlace("guia.html");
+  const urlSolucionarios = () => enlace("solucionarios.html");
   const urlAlumno = (alumnoId) => enlace(`alumno.html?alumno=${encodeURIComponent(alumnoId)}`);
   const urlTema = (alumnoId, temaId) =>
     enlace(`tema.html?alumno=${encodeURIComponent(alumnoId)}&tema=${encodeURIComponent(temaId)}`);
@@ -163,6 +164,42 @@ const Sitio = (() => {
     return TONOS[hash % TONOS.length];
   }
 
+  /* --- Clave estable de un ejercicio -------------------------------------
+     Se calcula a partir del enunciado, para que el panel del profesor y las
+     páginas de sección reconozcan el mismo ejercicio sin necesidad de ids. */
+
+  function claveEjercicio(texto) {
+    const normalizado = String(texto || "").replace(/\s+/g, " ").trim();
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < normalizado.length; i += 1) {
+      hash ^= normalizado.charCodeAt(i);
+      hash = Math.imul(hash, 0x01000193) >>> 0;
+    }
+    return hash.toString(16).padStart(8, "0");
+  }
+
+  /* --- Portapapeles (con plan B para navegadores sin permiso) ------------- */
+
+  async function copiarAlPortapapeles(texto) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(texto);
+        return true;
+      }
+    } catch (error) {
+      /* el navegador no dejó copiar: se selecciona el texto para copiarlo a mano */
+    }
+    return false;
+  }
+
+  function seleccionarTexto(nodo) {
+    const rango = document.createRange();
+    rango.selectNodeContents(nodo);
+    const seleccion = window.getSelection();
+    seleccion.removeAllRanges();
+    seleccion.addRange(rango);
+  }
+
   /* --- Cabecera y migas de pan ------------------------------------------- */
 
   function pintarCabecera(opciones = {}) {
@@ -173,11 +210,10 @@ const Sitio = (() => {
     const destinoMarca = alumno ? urlAlumno(alumno.id) : urlInicio();
 
     /* Los alumnos no ven ninguna salida hacia el panel ni hacia otros alumnos.
-       El profe, con la sesión abierta, sí tiene sus accesos. */
+       El profe, con la sesión abierta, tiene el acceso al panel. */
     const navProfesor = hayAccesoProfesor()
       ? `<nav class="cabecera-nav" aria-label="Navegación del profesor">
            <a href="${urlInicio()}">Panel</a>
-           <a href="${urlGuia()}">Guía</a>
          </nav>`
       : "";
 
@@ -219,6 +255,7 @@ const Sitio = (() => {
     param,
     urlInicio,
     urlGuia,
+    urlSolucionarios,
     urlAlumno,
     urlTema,
     urlSeccion,
@@ -227,6 +264,9 @@ const Sitio = (() => {
     buscarTema,
     iniciales,
     tono,
+    claveEjercicio,
+    copiarAlPortapapeles,
+    seleccionarTexto,
     pintarCabecera,
     migas,
     hayAccesoProfesor,

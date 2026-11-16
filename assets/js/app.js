@@ -55,9 +55,14 @@
           <span class="pildora">${Sitio.alumnos.length} alumno${Sitio.alumnos.length === 1 ? "" : "s"}</span>
           <span class="pildora">${temas} tema${temas === 1 ? "" : "s"}</span>
           <span class="pildora">${secciones} sección${secciones === 1 ? "" : "es"}</span>
-          <button type="button" class="boton boton-plano" id="boton-salir">Cerrar sesión</button>
         </div>
       </header>
+
+      <div class="panel-acciones">
+        <a class="boton" href="${Sitio.urlSolucionarios()}">Activar o desactivar soluciones</a>
+        <a class="boton boton-plano" href="${Sitio.urlGuia()}">Guía del profe</a>
+        <button type="button" class="boton boton-plano" id="boton-salir">Cerrar sesión</button>
+      </div>
 
       ${
         Sitio.alumnos.length
@@ -69,6 +74,7 @@
             )
       }
 
+      ${bloqueNuevoAlumno()}
       ${bloqueClave()}`;
 
     /* Cerrar sesión */
@@ -89,13 +95,13 @@
       const texto = boton.dataset.copiar;
       const etiqueta = boton.dataset.etiqueta || "Copiar";
 
-      if (await copiarAlPortapapeles(texto)) {
+      if (await Sitio.copiarAlPortapapeles(texto)) {
         boton.textContent = "¡Copiado!";
       } else {
         const zona =
           boton.closest(".tarjeta-panel")?.querySelector(".enlace-alumno") ||
           boton.closest(".resultado-clave")?.querySelector("pre");
-        if (zona) seleccionarTexto(zona);
+        if (zona) Sitio.seleccionarTexto(zona);
         boton.textContent = "Copia el texto de arriba";
       }
 
@@ -103,6 +109,22 @@
         boton.textContent = etiqueta;
       }, 2400);
     });
+
+    /* Generador de código para un alumno nuevo */
+    const generar = contenedor.querySelector("#generar-codigo");
+    if (generar) {
+      generar.addEventListener("click", () => {
+        const codigo = codigoAlumno();
+        const bloque = `{\n  id: "${codigo}",\n  nombre: "Nombre del alumno",\n  curso: "",\n  nota: "",\n  temas: [],\n},`;
+        const resultado = contenedor.querySelector("#resultado-codigo");
+        resultado.innerHTML = `
+          <p>Código: <code>${codigo}</code></p>
+          <pre><code>${Sitio.escapar(bloque)}</code></pre>
+          <p>Crea la carpeta <code>contenido/${codigo}/</code> y dentro el tema con sus tres archivos.
+          Su enlace será <code>alumno.html?alumno=${codigo}</code>.</p>
+          <button type="button" class="boton" data-copiar="${Sitio.escapar(bloque)}" data-etiqueta="Copiar bloque">Copiar bloque</button>`;
+      });
+    }
 
     /* Generador de hash para cambiar la clave */
     const formulario = contenedor.querySelector("#form-clave");
@@ -163,6 +185,32 @@
       <strong>Estás usando la clave de ejemplo «profesor».</strong>
       <p>Cámbiala antes de compartir el sitio con tus alumnos. Tienes el generador al final de esta página.</p>
     </div>`;
+  }
+
+  function bloqueNuevoAlumno() {
+    return `<section class="paso panel-clave" id="nuevo-alumno" aria-labelledby="titulo-nuevo-alumno">
+      <div class="paso-cabeza">
+        <h2 id="titulo-nuevo-alumno">Agregar un alumno</h2>
+      </div>
+      <p>
+        El <strong>código</strong> es la carpeta del alumno y también la parte del enlace que él ve,
+        así que no contiene su nombre. Genera uno, copia el bloque en
+        <code>assets/js/contenido.js</code> y crea la carpeta <code>contenido/…/</code> con sus temas.
+      </p>
+      <button type="button" class="boton" id="generar-codigo">Generar código</button>
+      <div id="resultado-codigo" class="resultado-clave" aria-live="polite"></div>
+    </section>`;
+  }
+
+  function codigoAlumno() {
+    const alfabeto = "abcdefghijkmnpqrstuvwxyz23456789";
+    const bytes = new Uint8Array(8);
+    if (window.crypto && window.crypto.getRandomValues) {
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < bytes.length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
+    }
+    return Array.from(bytes, (byte) => alfabeto[byte % alfabeto.length]).join("");
   }
 
   function bloqueClave() {
@@ -335,26 +383,6 @@
   }
 
   /* ================================================================ Utilidades */
-  async function copiarAlPortapapeles(texto) {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(texto);
-        return true;
-      }
-    } catch (error) {
-      /* el navegador no dejó copiar: se selecciona el texto para copiarlo a mano */
-    }
-    return false;
-  }
-
-  function seleccionarTexto(nodo) {
-    const rango = document.createRange();
-    rango.selectNodeContents(nodo);
-    const seleccion = window.getSelection();
-    seleccion.removeAllRanges();
-    seleccion.addRange(rango);
-  }
-
   function aviso(titulo, mensajeHtml, etiquetaTitulo = "h2", href = "", textoBoton = "") {
     return `<div class="aviso">
       <p class="aviso-icono" aria-hidden="true">∅</p>
