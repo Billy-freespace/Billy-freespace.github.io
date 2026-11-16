@@ -1,0 +1,9 @@
+# Carpeta de revisión local (capturas y pruebas). No se publica.
+.qa/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Node (solo si algún día se agregan dependencias)
+node_modules/

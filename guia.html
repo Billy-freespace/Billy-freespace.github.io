@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guía del profe · Cuaderno de matemática</title>
+  <meta name="description" content="Cómo agregar alumnos, temas, secciones, ejercicios y solucionarios al cuaderno.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+  <link rel="stylesheet" href="assets/estilos.css">
+</head>
+<body class="pagina-guia" data-pagina="guia">
+  <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+  <div id="cabecera-sitio"></div>
+  <noscript>
+    <p class="aviso-noscript">Esta guía se lee mejor con JavaScript activado, pero todo el texto está aquí.</p>
+  </noscript>
+
+  <main id="contenido">
+    <div class="contenedor vista">
+      <nav class="migas" aria-label="Ruta de navegación">
+        <ol>
+          <li><a href="index.html">Alumnos</a></li>
+          <li><span aria-current="page">Guía del profe</span></li>
+        </ol>
+      </nav>
+
+      <header class="cabecera-vista">
+        <p class="eyebrow">Para el profe</p>
+        <h1>Cómo agregar contenido</h1>
+        <p class="entradilla">
+          Todo el sitio se ordena desde un solo archivo: <code>assets/js/contenido.js</code>.
+          Los ejercicios van en archivos HTML dentro de <code>contenido/</code>. No hay que
+          instalar nada ni compilar: se sube a GitHub y listo.
+        </p>
+      </header>
+
+      <section class="paso" aria-labelledby="mapa">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">0</span>
+          <h2 id="mapa">El mapa del sitio</h2>
+        </div>
+        <pre class="arbol"><code>web-math-exercises/
+├── index.html              ← portada: lista de alumnos
+├── alumno.html             ← temas de un alumno
+├── tema.html               ← los 3 niveles de un tema
+├── guia.html               ← esta página
+├── assets/
+│   ├── estilos.css         ← colores y diseño
+│   └── js/
+│       ├── contenido.js    ← ★ aquí se ordena todo
+│       ├── comun.js
+│       ├── app.js
+│       └── seccion.js
+├── contenido/
+│   ├── ana/
+│   │   ├── fracciones/
+│   │   │   ├── basico.html
+│   │   │   ├── intermedio.html
+│   │   │   └── avanzado.html
+│   │   └── ecuaciones/
+│   │       └── ...
+│   └── beto/
+│       └── proporcionalidad/
+│           └── ...
+└── plantillas/
+    └── seccion.html        ← copia esto para una sección nueva</code></pre>
+        <p>
+          La regla es simple: <strong>un alumno es una carpeta</strong>, <strong>un tema es una
+          subcarpeta</strong> y <strong>cada nivel es un archivo</strong> llamado
+          <code>basico.html</code>, <code>intermedio.html</code> o <code>avanzado.html</code>.
+        </p>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-alumno">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">1</span>
+          <h2 id="paso-alumno">Agregar un alumno</h2>
+        </div>
+        <p>Abre <code>assets/js/contenido.js</code> y agrega un bloque dentro de <code>alumnos</code>:</p>
+        <pre><code>{
+  id: "carla",                 // minúsculas, sin tildes ni espacios
+  nombre: "Carla Mendoza",
+  curso: "3.º de secundaria",  // opcional
+  nota: "Números enteros",     // opcional
+  temas: []                    // se llena en el paso 2
+}</code></pre>
+        <p>El <code>id</code> también será el nombre de su carpeta en <code>contenido/</code>.</p>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-tema">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">2</span>
+          <h2 id="paso-tema">Agregar un tema</h2>
+        </div>
+        <ol>
+          <li>Crea la carpeta <code>contenido/carla/enteros/</code>.</li>
+          <li>
+            Copia <code>plantillas/seccion.html</code> tres veces dentro de ella y renombra las
+            copias como <code>basico.html</code>, <code>intermedio.html</code> y
+            <code>avanzado.html</code>.
+          </li>
+          <li>
+            En cada copia cambia el <code>data-seccion</code> del <code>&lt;body&gt;</code> y el
+            <code>&lt;title&gt;</code>. Por ejemplo:
+            <code>data-seccion="carla/enteros/basico"</code>.
+          </li>
+          <li>Agrega el tema en el alumno, dentro de <code>temas</code>:</li>
+        </ol>
+        <pre><code>{ id: "enteros", titulo: "Números enteros" }</code></pre>
+        <p>
+          Si el tema todavía no tiene los tres niveles, se indica cuáles existen:
+        </p>
+        <pre><code>{ id: "enteros", titulo: "Números enteros", niveles: ["basico", "intermedio"] }</code></pre>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-ejercicio">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">3</span>
+          <h2 id="paso-ejercicio">Agregar un ejercicio</h2>
+        </div>
+        <p>
+          Abre el archivo del nivel que corresponda y pega un bloque como este dentro de
+          <code>&lt;ol class="ejercicios"&gt;</code>. La numeración es automática.
+        </p>
+        <pre><code>&lt;li class="ejercicio"&gt;
+  &lt;p class="enunciado"&gt;Calcula \(\frac{1}{2}+\frac{1}{3}\).&lt;/p&gt;
+
+  &lt;details class="solucion"&gt;
+    &lt;summary&gt;Ver solución&lt;/summary&gt;
+    &lt;div class="pasos"&gt;
+      &lt;p&gt;Se busca el denominador común \(6\):&lt;/p&gt;
+      &lt;p&gt;\(\frac{3}{6}+\frac{2}{6}=\frac{5}{6}\).&lt;/p&gt;
+      &lt;p class="respuesta"&gt;\(\frac{5}{6}\)&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/details&gt;
+&lt;/li&gt;</code></pre>
+        <p>
+          Si quieres separar los ejercicios por tipo, envuelve cada grupo en un
+          <code>&lt;section class="bloque"&gt;</code> con su <code>&lt;h2&gt;</code>
+          (así están organizadas las secciones de ejemplo).
+        </p>
+        <p>
+          También puedes agregar una pista antes de la solución:
+        </p>
+        <pre><code>&lt;details class="pista"&gt;
+  &lt;summary&gt;Ver pista&lt;/summary&gt;
+  &lt;p&gt;Recuerda que \(\frac{1}{2}=\frac{3}{6}\).&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-solucion">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">4</span>
+          <h2 id="paso-solucion">Escribir el solucionario con KaTeX</h2>
+        </div>
+        <p>
+          Las fórmulas se escriben entre <code>\(</code> y <code>\)</code> si van dentro de una
+          frase, o entre <code>$$</code> y <code>$$</code> si van centradas en su propio renglón.
+          KaTeX se encarga del resto; las soluciones quedan ocultas hasta que el alumno hace clic.
+        </p>
+        <pre><code>Dentro de una frase: \(\frac{a}{b}\) y también \(x^2+1\).
+
+En su propio renglón:
+$$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
+        <table class="tabla">
+          <thead>
+            <tr><th>Quiero escribir</th><th>Se escribe</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Fracción</td><td><code>\frac{3}{4}</code></td></tr>
+            <tr><td>Raíz cuadrada</td><td><code>\sqrt{x}</code> o <code>\sqrt[3]{x}</code></td></tr>
+            <tr><td>Potencia y subíndice</td><td><code>x^{2}</code> y <code>a_{n}</code></td></tr>
+            <tr><td>Multiplicación y división</td><td><code>\cdot</code> y <code>\div</code></td></tr>
+            <tr><td>Menor o igual, distinto</td><td><code>\le</code> y <code>\neq</code></td></tr>
+            <tr><td>Paréntesis que crecen</td><td><code>\left( \frac{1}{2} \right)</code></td></tr>
+            <tr><td>Infinito, pi, alfa</td><td><code>\infty</code>, <code>\pi</code>, <code>\alpha</code></td></tr>
+            <tr><td>Texto dentro de una fórmula</td><td><code>\text{si } x\neq 0</code></td></tr>
+            <tr><td>Sistema de ecuaciones</td><td><code>\begin{cases} x+y=5 \\ x-y=1 \end{cases}</code></td></tr>
+          </tbody>
+        </table>
+        <p>
+          <strong>Ojo con dos cosas:</strong> si escribes <code>&lt;</code> o <code>&gt;</code>
+          dentro del HTML, cámbialos por <code>&amp;lt;</code> y <code>&amp;gt;</code>. Y en un
+          sistema de ecuaciones cada salto de línea se escribe con <code>\\</code>.
+        </p>
+      </section>
+
+      <section class="paso" aria-labelledby="paso-publicar">
+        <div class="paso-cabeza">
+          <span class="paso-numero" aria-hidden="true">5</span>
+          <h2 id="paso-publicar">Revisar y publicar</h2>
+        </div>
+        <ul>
+          <li>
+            Antes de subir los cambios, en la carpeta del proyecto ejecuta
+            <code>node herramientas/verificar.mjs</code>: te avisa si falta un archivo, si un
+            <code>data-seccion</code> no coincide o si hay un id repetido.
+          </li>
+          <li>
+            Sube los cambios a GitHub: <code>git add .</code>, <code>git commit -m "nuevo tema"</code>
+            y <code>git push</code>.
+          </li>
+          <li>
+            En GitHub, entra a <strong>Settings → Pages</strong>, elige la rama
+            <code>main</code> y la carpeta <code>/ (root)</code>. El sitio queda publicado en
+            <code>https://tu-usuario.github.io/web-math-exercises/</code>.
+          </li>
+          <li>
+            Para verlo en tu computadora basta con abrir <code>index.html</code> con doble clic,
+            sin servidor.
+          </li>
+        </ul>
+      </section>
+
+      <p class="nota-pie">
+        Los contenidos de ejemplo (Ana y Beto) se pueden borrar sin miedo: elimina sus bloques en
+        <code>contenido.js</code> y sus carpetas en <code>contenido/</code>.
+      </p>
+    </div>
+  </main>
+
+  <footer class="pie-sitio">
+    <div class="contenedor pie-interior">
+      <p>Ejercicios de matemática · solucionario paso a paso</p>
+      <p class="pie-nota">Fórmulas escritas con <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/contenido.js"></script>
+  <script src="assets/js/comun.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

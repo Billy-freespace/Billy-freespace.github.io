@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cuaderno de matemática</title>
+  <meta name="description" content="Ejercicios de matemática organizados por alumno, tema y nivel, con solucionario paso a paso.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+  <link rel="stylesheet" href="assets/estilos.css">
+</head>
+<body class="pagina-inicio" data-pagina="inicio">
+  <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+  <div id="cabecera-sitio"></div>
+  <noscript>
+    <p class="aviso-noscript">Este cuaderno necesita JavaScript activado para mostrar los alumnos y las fórmulas.</p>
+  </noscript>
+
+  <main id="contenido">
+    <section class="hero">
+      <div class="contenedor">
+        <p class="eyebrow">Cuaderno de ejercicios</p>
+        <h1 data-sitio="nombre">Cuaderno de matemática</h1>
+        <p class="entradilla" data-sitio="descripcion"></p>
+        <p class="resumen" id="resumen-sitio"></p>
+      </div>
+    </section>
+
+    <section class="seccion-listado" aria-labelledby="titulo-alumnos">
+      <div class="contenedor">
+        <div class="seccion-cabeza">
+          <h2 id="titulo-alumnos">Alumnos</h2>
+          <p>Elige un alumno para ver sus temas</p>
+        </div>
+        <div class="rejilla" id="lista-alumnos"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-sitio">
+    <div class="contenedor pie-interior">
+      <p>Ejercicios de matemática · solucionario paso a paso</p>
+      <p class="pie-nota">Fórmulas escritas con <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/contenido.js"></script>
+  <script src="assets/js/comun.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

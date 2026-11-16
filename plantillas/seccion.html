@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  ============================================================================
+  PLANTILLA DE UNA SECCIÓN DE EJERCICIOS
+  ----------------------------------------------------------------------------
+  1. Copia este archivo dentro de la carpeta del tema, por ejemplo:
+         contenido/carla/enteros/basico.html
+     (las rutas a ../assets ya están preparadas para esa ubicación)
+
+  2. Cambia estas tres cosas:
+       · el <title> de abajo
+       · el atributo data-seccion="alumno/tema/nivel" del <body>
+       · el contenido entre los comentarios "ESCRIBE AQUÍ"
+
+  3. No toques las etiquetas <script> ni <link>: son las que cargan los
+     estilos, el menú y KaTeX.
+  ============================================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Básico · Tema · Alumno</title>
+  <meta name="description" content="Ejercicios de ... con solucionario paso a paso.">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../../../assets/estilos.css">
+</head>
+<body class="pagina-seccion" data-base="../../../" data-seccion="alumno/tema/basico">
+  <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+  <div id="cabecera-sitio"></div>
+  <noscript>
+    <p class="aviso-noscript">Este cuaderno necesita JavaScript activado para mostrar las fórmulas y las soluciones.</p>
+  </noscript>
+
+  <main class="contenido-estrecho" id="contenido">
+    <div id="encabezado-seccion"></div>
+    <div id="barra-herramientas" class="barra-herramientas" hidden></div>
+
+    <!-- ▼▼▼ ESCRIBE AQUÍ LOS EJERCICIOS ▼▼▼ -->
+
+    <p class="entradilla">Una frase que explique qué se practica en esta sección.</p>
+
+    <section class="bloque">
+      <h2>Nombre del grupo de ejercicios</h2>
+      <ol class="ejercicios">
+
+        <li class="ejercicio">
+          <p class="enunciado">Calcula \(\frac{1}{2}+\frac{1}{3}\).</p>
+
+          <details class="solucion">
+            <summary>Ver solución</summary>
+            <div class="pasos">
+              <p>Se busca el denominador común \(6\):</p>
+              <p>\(\frac{3}{6}+\frac{2}{6}=\frac{5}{6}\).</p>
+              <p class="respuesta">\(\frac{5}{6}\)</p>
+            </div>
+          </details>
+        </li>
+
+        <!-- Copia el bloque <li class="ejercicio"> ... </li> para cada ejercicio -->
+
+      </ol>
+    </section>
+
+    <!-- ▲▲▲ FIN DE LOS EJERCICIOS ▲▲▲ -->
+  </main>
+
+  <footer class="pie-sitio">
+    <div class="contenedor pie-interior">
+      <p>Ejercicios de matemática · solucionario paso a paso</p>
+      <p class="pie-nota">Fórmulas escritas con <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a></p>
+    </div>
+  </footer>
+
+  <script src="../../../assets/js/contenido.js"></script>
+  <script src="../../../assets/js/comun.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="../../../assets/js/seccion.js"></script>
+</body>
+</html>
