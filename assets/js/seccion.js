@@ -168,9 +168,10 @@
       const detalle = ejercicio.querySelector("details.solucion");
       if (!detalle) return;
 
-      const apagada = estado[ejercicio.dataset.claveSolucion] === false;
-      detalle.hidden = apagada;
-      ejercicio.classList.toggle("solucion-apagada", apagada);
+      /* Las soluciones están apagadas salvo que su clave valga true. */
+      const activa = estado[ejercicio.dataset.claveSolucion] === true;
+      detalle.hidden = !activa;
+      ejercicio.classList.toggle("solucion-apagada", !activa);
     });
   }
 

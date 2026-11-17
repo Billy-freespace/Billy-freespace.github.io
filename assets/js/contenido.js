@@ -31,14 +31,15 @@ const CONTENIDO = {
   alumnos: [
     {
       id: "ykfiv2iw",
-      nombre: "Ana Torres",
-      curso: "4.º de secundaria",
-      nota: "Fracciones y ecuaciones de primer grado",
+      nombre: "Mariapaz Poma F.",
+      curso: "1º de secundaria",
+      nota: "Operaciones combinadas y ecuaciones de primer grado",
       temas: [
         {
-          id: "fracciones",
-          titulo: "Fracciones",
-          descripcion: "Suma, resta, multiplicación, división y problemas con fracciones.",
+          id: "operaciones_combinadas",
+          titulo: "Operaciones Combinadas",
+          descripcion:
+            "Suma, resta, multiplicación, división con números asociados.",
         },
         {
           id: "ecuaciones",
@@ -49,14 +50,21 @@ const CONTENIDO = {
     },
     {
       id: "zhuxqqwb",
-      nombre: "Beto Ramírez",
-      curso: "2.º de secundaria",
+      nombre: "Gabriel Poma C.",
+      curso: "3º de secundaria",
       nota: "Proporcionalidad, porcentajes y repartos",
       temas: [
         {
+          id: "fracciones",
+          titulo: "Fracciones",
+          descripcion:
+            "Suma, resta, multiplicación, división y problemas con fracciones.",
+        },
+        {
           id: "proporcionalidad",
           titulo: "Proporcionalidad",
-          descripcion: "Regla de tres, porcentajes, escalas y repartos proporcionales.",
+          descripcion:
+            "Regla de tres, porcentajes, escalas y repartos proporcionales.",
         },
       ],
     },

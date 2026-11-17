@@ -72,7 +72,11 @@
   }
 
   function montar(raiz) {
-    const estado = Object.assign({}, window.SOLUCIONES);
+    /* Solo las claves con true activan una solución; el resto queda apagado. */
+    const estado = {};
+    Object.entries(window.SOLUCIONES).forEach(([clave, valor]) => {
+      if (valor === true) estado[clave] = true;
+    });
 
     const grupos = Sitio.alumnos
       .map((alumno) => ({
@@ -95,13 +99,14 @@
       <header class="cabecera-vista">
         <p class="eyebrow">Panel del profesor</p>
         <h1>Solucionarios</h1>
-        <p class="entradilla">Activa o desactiva la solución de cada ejercicio. Cuando termines,
-        descarga el archivo y reemplaza <code>assets/js/soluciones.js</code>; después sube el cambio
-        a GitHub para que los alumnos lo vean.</p>
+        <p class="entradilla">Por defecto ninguna solución se muestra: marca las que quieras
+        publicar. Cuando termines, descarga el archivo y reemplaza
+        <code>assets/js/soluciones.js</code>; después sube el cambio a GitHub para que los alumnos
+        lo vean.</p>
       </header>
 
       <div class="barra-soluciones">
-        <p><strong id="contador-soluciones">0</strong> soluciones desactivadas</p>
+        <p><strong id="contador-soluciones">0</strong> soluciones activadas</p>
         <div class="acciones">
           <button type="button" class="boton boton-primario" id="descargar-soluciones">Descargar soluciones.js</button>
           <button type="button" class="boton" id="copiar-soluciones">Copiar contenido</button>
@@ -159,21 +164,21 @@
 
     /* Estado y contadores */
     function actualizar() {
-      const apagadas = Object.keys(estado).filter((clave) => estado[clave] === false).length;
-      contador.textContent = String(apagadas);
+      const activadas = Object.keys(estado).filter((clave) => estado[clave] === true).length;
+      contador.textContent = String(activadas);
 
       raiz.querySelectorAll(".seccion-soluciones").forEach((detalles) => {
         const casillas = Array.from(detalles.querySelectorAll("input[type=checkbox]"));
         if (!casillas.length) return;
 
-        const sinSolucion = casillas.filter((casilla) => !casilla.checked).length;
+        const conSolucion = casillas.filter((casilla) => casilla.checked).length;
         detalles.querySelector(".seccion-estado").textContent =
           `${casillas.length} ejercicio${casillas.length === 1 ? "" : "s"} · ` +
-          `${sinSolucion} sin solución`;
+          `${conSolucion} con solución`;
 
         const resumen = detalles.querySelector("[data-resumen]");
         if (resumen) {
-          resumen.textContent = sinSolucion ? `${sinSolucion} sin solución` : "todas activas";
+          resumen.textContent = conSolucion ? `${conSolucion} con solución` : "ninguna activa";
         }
       });
 
@@ -182,8 +187,8 @@
          abierto todavía). */
       raiz.querySelectorAll(".tema-soluciones").forEach((temaEl) => {
         const prefijo = temaEl.dataset.prefijo;
-        const apagadasTema = Object.keys(estado).filter(
-          (clave) => estado[clave] === false && clave.startsWith(prefijo)
+        const activasTema = Object.keys(estado).filter(
+          (clave) => estado[clave] === true && clave.startsWith(prefijo)
         ).length;
         const niveles = temaEl.querySelectorAll(".seccion-soluciones").length;
         const etiqueta = temaEl.querySelector(".tema-estado");
@@ -191,7 +196,7 @@
 
         etiqueta.textContent =
           `${niveles} nivel${niveles === 1 ? "" : "es"}` +
-          (apagadasTema ? ` · ${apagadasTema} sin solución` : "");
+          (activasTema ? ` · ${activasTema} con solución` : "");
       });
     }
 
@@ -230,7 +235,7 @@
           const enunciado = ejercicio.querySelector(".enunciado");
           const texto = enunciado ? enunciado.textContent : ejercicio.textContent;
           const clave = `${seccion}#${Sitio.claveEjercicio(texto)}`;
-          const activa = estado[clave] !== false;
+          const activa = estado[clave] === true;
 
           const fila = document.createElement("li");
           fila.className = "fila-solucion";
@@ -247,8 +252,8 @@
 
           fila.querySelector("input").addEventListener("change", (evento) => {
             const casilla = evento.currentTarget;
-            if (casilla.checked) delete estado[casilla.dataset.clave];
-            else estado[casilla.dataset.clave] = false;
+            if (casilla.checked) estado[casilla.dataset.clave] = true;
+            else delete estado[casilla.dataset.clave];
             actualizar();
           });
 
@@ -260,8 +265,8 @@
             const activar = boton.dataset.todas === "1";
             lista.querySelectorAll("input[type=checkbox]").forEach((casilla) => {
               casilla.checked = activar;
-              if (activar) delete estado[casilla.dataset.clave];
-              else estado[casilla.dataset.clave] = false;
+              if (activar) estado[casilla.dataset.clave] = true;
+              else delete estado[casilla.dataset.clave];
             });
             actualizar();
           });
@@ -298,9 +303,9 @@
     /* Archivo resultante */
     function generarArchivo() {
       const claves = Object.keys(estado)
-        .filter((clave) => estado[clave] === false)
+        .filter((clave) => estado[clave] === true)
         .sort();
-      const lineas = claves.map((clave) => `  "${clave}": false,`).join("\n");
+      const lineas = claves.map((clave) => `  "${clave}": true,`).join("\n");
       const objeto = claves.length ? `{\n${lineas}\n}` : "{}";
       const fecha = new Date().toLocaleString("es");
 
@@ -308,8 +313,8 @@
    INTERRUPTORES DEL SOLUCIONARIO
    ----------------------------------------------------------------------------
    Generado desde el panel del profesor el ${fecha}.
-   Cada línea apaga la solución de un ejercicio concreto. Si un ejercicio no
-   aparece aquí, su solución se muestra normalmente.
+   Por defecto NINGUNA solución se muestra. Cada línea con "true" activa la
+   solución de un ejercicio concreto.
    ========================================================================== */
 
 window.SOLUCIONES = ${objeto};

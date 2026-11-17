@@ -22,7 +22,7 @@ const ARCHIVO_CONTENIDO = path.join(RAIZ, "assets", "js", "contenido.js");
 const CARPETA_CONTENIDO = path.join(RAIZ, "contenido");
 
 const NIVELES_VALIDOS = ["basico", "intermedio", "avanzado"];
-const ID_VALIDO = /^[a-z0-9][a-z0-9-]*$/;
+const ID_VALIDO = /^[a-z0-9][a-z0-9_-]*$/;
 
 const errores = [];
 const avisos = [];
@@ -184,8 +184,8 @@ for (const [clave, valor] of Object.entries(soluciones)) {
   if (!seccionesDeclaradas.has(seccion)) {
     aviso(`soluciones.js menciona una sección que no existe: "${seccion}".`);
   }
-  if (valor !== false) {
-    aviso(`En soluciones.js la clave "${clave}" debería valer false.`);
+  if (valor !== true) {
+    aviso(`En soluciones.js la clave "${clave}" debería valer true para activar la solución.`);
   }
 }
 

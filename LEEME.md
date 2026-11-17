@@ -56,16 +56,17 @@ Usa una clave larga (12 caracteres o una frase) y no la reutilices en otro sitio
 
 ## Activar o desactivar soluciones
 
-Cada ejercicio puede mostrar u ocultar su solución por separado.
+Por defecto **ninguna solución se muestra**: los alumnos ven los enunciados, pero no el botón
+«Ver solución». Tú decides qué soluciones publicar.
 
-1. En el panel, entra a **Solucionarios**.
-2. Abre una sección: verás cada ejercicio con una casilla (marcada = el alumno ve la solución).
+1. En el panel, entra a **Solucionarios** y abre un alumno, un tema y un nivel.
+2. Marca la casilla de cada ejercicio cuya solución quieras publicar (desmarcada = apagada).
 3. Al terminar, pulsa **Descargar soluciones.js** (o **Copiar contenido**).
 4. Reemplaza `assets/js/soluciones.js` con ese archivo y sube el cambio.
 
-El estado queda en `assets/js/soluciones.js`, así el sitio sigue siendo estático. El panel
-reconoce cada ejercicio por su enunciado: si cambias el texto de un enunciado, ese interruptor
-vuelve a «mostrar».
+El estado queda en `assets/js/soluciones.js` como una lista de claves con `true`; lo que no
+aparece queda apagado. El panel reconoce cada ejercicio por su enunciado: si cambias el texto de
+un enunciado, ese interruptor vuelve a «desactivado».
 
 > Los interruptores necesitan abrir el panel por HTTP: GitHub Pages o un servidor local
 > (mejor `node herramientas/servidor.mjs`). Abriéndolo con doble clic no puede leer los archivos
@@ -172,7 +173,7 @@ web-math-exercises/
 │   ├── favicon.svg
 │   └── js/
 │       ├── contenido.js    ← ★ el único archivo que hay que editar para ordenar
-│       ├── soluciones.js   ← qué soluciones están desactivadas
+│       ├── soluciones.js   ← qué soluciones están activadas
 │       ├── clave.js        ← clave del panel (hash)
 │       ├── acceso.js       ← pantalla de acceso (no editar)
 │       ├── comun.js        ← utilidades (no editar)
