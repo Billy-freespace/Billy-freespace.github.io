@@ -158,7 +158,13 @@ for (const alumno of alumnos) {
 let soluciones = {};
 try {
   const codigoSoluciones = fs.readFileSync(path.join(RAIZ, "assets", "js", "soluciones.js"), "utf8");
-  soluciones = new Function(`${codigoSoluciones}\nreturn SOLUCIONES;`)() || {};
+  const ventana = { SOLUCIONES: {} };
+  soluciones =
+    new Function("window", `${codigoSoluciones}\nreturn window.SOLUCIONES;`)(ventana) || {};
+
+  if (/const\s+SOLUCIONES/.test(codigoSoluciones)) {
+    aviso("soluciones.js usa el formato viejo (const SOLUCIONES). Vuelve a descargarlo desde el panel.");
+  }
 } catch (e) {
   error("No se pudo leer assets/js/soluciones.js: " + e.message);
 }

@@ -20,11 +20,42 @@
 
   document.title = `Solucionarios · ${Sitio.sitio.nombre}`;
 
-  const mostrar = () => {
+  let carga = null;
+
+  /* Se pide soluciones.js con una marca única para saltarse la caché: así el
+     panel siempre parte del estado que está publicado. */
+  function cargarConfiguracion() {
+    if (!carga) {
+      carga = new Promise((resolver) => {
+        const script = document.createElement("script");
+        script.src = `${Sitio.enlace("assets/js/soluciones.js")}?v=${Date.now()}`;
+        script.async = true;
+        script.onload = () => resolver(true);
+        script.onerror = () => resolver(false);
+        document.head.appendChild(script);
+        window.setTimeout(() => resolver(false), 5000);
+      });
+    }
+    return carga;
+  }
+
+  async function mostrar() {
+    const cargada = await cargarConfiguracion();
     contenido.hidden = false;
     if (acceso) acceso.remove();
+
+    if (!cargada || !window.SOLUCIONES || typeof window.SOLUCIONES !== "object") {
+      contenido.innerHTML = `<div class="aviso">
+        <p class="aviso-icono" aria-hidden="true">!</p>
+        <h1>No se pudo leer soluciones.js</h1>
+        <p>Revisa que el archivo <code>assets/js/soluciones.js</code> exista y tenga el formato que
+        genera este panel. Para evitar perder los interruptores, no se muestra nada más.</p>
+      </div>`;
+      return;
+    }
+
     montar(contenido);
-  };
+  }
 
   if (Sitio.hayAccesoProfesor()) {
     mostrar();
@@ -39,10 +70,7 @@
   }
 
   function montar(raiz) {
-    const estado = Object.assign(
-      {},
-      typeof SOLUCIONES !== "undefined" && SOLUCIONES ? SOLUCIONES : {}
-    );
+    const estado = Object.assign({}, window.SOLUCIONES);
 
     const grupos = Sitio.alumnos
       .map((alumno) => ({
@@ -250,7 +278,7 @@
    aparece aquí, su solución se muestra normalmente.
    ========================================================================== */
 
-const SOLUCIONES = ${objeto};
+window.SOLUCIONES = ${objeto};
 `;
     }
 

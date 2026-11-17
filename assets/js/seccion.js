@@ -4,6 +4,7 @@
    Se encarga de:
      · dibujar las migas de pan y el título a partir del atributo
        data-seccion="alumno/tema/nivel" del <body>;
+     · aplicar los interruptores del solucionario;
      · agregar el botón para mostrar u ocultar todas las soluciones;
      · escribir las fórmulas con KaTeX.
    No hace falta editar este archivo.
@@ -20,13 +21,15 @@
   /* La marca de la cabecera vuelve a la página del alumno, nunca al panel. */
   Sitio.pintarCabecera({ alumno });
 
-  /* Las soluciones apagadas se ocultan antes de contar y de escribir fórmulas. */
-  aplicarInterruptoresDeSoluciones();
+  const ejercicios = Array.from(document.querySelectorAll(".ejercicio"));
+
+  /* Las claves se calculan antes de que KaTeX toque los enunciados. */
+  prepararClaves();
+  aplicarInterruptores();
 
   const encabezado = document.getElementById("encabezado-seccion");
-  const soluciones = Array.from(document.querySelectorAll("details.solucion:not([hidden])"));
-  const ejercicios = document.querySelectorAll(".ejercicio");
   const contextoValido = Boolean(alumno && tema && nivel);
+  const soluciones = solucionesVisibles();
 
   if (encabezado) {
     if (contextoValido) {
@@ -43,9 +46,7 @@
           <p class="entradilla">${Sitio.escapar(nivel.descripcion)}</p>
           <div class="meta-fila">
             <span class="pildora">${Sitio.escapar(alumno.nombre)}</span>
-            <span class="pildora">${ejercicios.length} ejercicio${ejercicios.length === 1 ? "" : "s"}${
-              soluciones.length ? ` · ${soluciones.length} con solución` : " · sin soluciones"
-            }</span>
+            <span class="pildora" id="pildora-soluciones">${textoPildora(soluciones)}</span>
           </div>
         </header>`;
     } else {
@@ -65,6 +66,17 @@
   }
 
   escribirFormulas();
+
+  /* Si el profe cambió soluciones.js, el alumno no necesita borrar la caché:
+     al cargar la página se comprueba la versión del servidor y se actualiza. */
+  comprobarVersionDelSolucionario();
+
+  /* Al imprimir, las soluciones visibles salen abiertas. */
+  window.addEventListener("beforeprint", () => {
+    solucionesVisibles().forEach((detalle) => {
+      detalle.open = true;
+    });
+  });
 
   /* ------------------------------------------------------ Navegación final */
   function pintarNavegacion(alumnoActual, temaActual, nivelActual) {
@@ -98,7 +110,13 @@
   /* ------------------------------------------------------------ Herramientas */
   function pintarHerramientas(detalles) {
     const barra = document.getElementById("barra-herramientas");
-    if (!barra || !detalles.length) return;
+    if (!barra) return;
+
+    if (!detalles.length) {
+      barra.hidden = true;
+      barra.innerHTML = "";
+      return;
+    }
 
     barra.hidden = false;
     barra.innerHTML = `
@@ -125,29 +143,73 @@
     detalles.forEach((detalle) => detalle.addEventListener("toggle", sincronizar));
     botonImprimir.addEventListener("click", () => window.print());
 
-    /* Al imprimir, las soluciones deben salir siempre visibles. */
-    window.addEventListener("beforeprint", () => detalles.forEach((detalle) => (detalle.open = true)));
-
     sincronizar();
   }
 
   /* ------------------------------------------- Interruptores del solucionario */
-  function aplicarInterruptoresDeSoluciones() {
-    const estado = typeof SOLUCIONES !== "undefined" && SOLUCIONES ? SOLUCIONES : {};
+  function prepararClaves() {
     const seccion = document.body.dataset.seccion || "";
 
-    document.querySelectorAll(".ejercicio").forEach((ejercicio) => {
+    ejercicios.forEach((ejercicio) => {
+      const enunciado = ejercicio.querySelector(".enunciado");
+      const texto = enunciado ? enunciado.textContent : ejercicio.textContent;
+      ejercicio.dataset.claveSolucion = `${seccion}#${Sitio.claveEjercicio(texto)}`;
+    });
+  }
+
+  function configuracion() {
+    return window.SOLUCIONES && typeof window.SOLUCIONES === "object" ? window.SOLUCIONES : {};
+  }
+
+  function aplicarInterruptores() {
+    const estado = configuracion();
+
+    ejercicios.forEach((ejercicio) => {
       const detalle = ejercicio.querySelector("details.solucion");
       if (!detalle) return;
 
-      const enunciado = ejercicio.querySelector(".enunciado");
-      const clave = `${seccion}#${Sitio.claveEjercicio(enunciado ? enunciado.textContent : ejercicio.textContent)}`;
-
-      if (estado[clave] === false) {
-        detalle.hidden = true;
-        ejercicio.classList.add("solucion-apagada");
-      }
+      const apagada = estado[ejercicio.dataset.claveSolucion] === false;
+      detalle.hidden = apagada;
+      ejercicio.classList.toggle("solucion-apagada", apagada);
     });
+  }
+
+  function solucionesVisibles() {
+    return Array.from(document.querySelectorAll("details.solucion:not([hidden])"));
+  }
+
+  function textoPildora(visibles) {
+    return (
+      `${ejercicios.length} ejercicio${ejercicios.length === 1 ? "" : "s"}` +
+      (visibles.length ? ` · ${visibles.length} con solución` : " · sin soluciones")
+    );
+  }
+
+  function cargarConfiguracionFresca() {
+    /* La marca ?v= obliga al navegador a pedir el archivo sin usar la caché. */
+    return new Promise((resolver) => {
+      const script = document.createElement("script");
+      script.src = `${Sitio.enlace("assets/js/soluciones.js")}?v=${Date.now()}`;
+      script.async = true;
+      script.onload = () => resolver(true);
+      script.onerror = () => resolver(false);
+      document.head.appendChild(script);
+      window.setTimeout(() => resolver(false), 5000);
+    });
+  }
+
+  async function comprobarVersionDelSolucionario() {
+    if (window.location.protocol === "file:") return;
+
+    const antes = JSON.stringify(configuracion());
+    const cargada = await cargarConfiguracionFresca();
+    if (!cargada || JSON.stringify(configuracion()) === antes) return;
+
+    aplicarInterruptores();
+    const visibles = solucionesVisibles();
+    const pildora = document.getElementById("pildora-soluciones");
+    if (pildora) pildora.textContent = textoPildora(visibles);
+    if (contextoValido) pintarHerramientas(visibles);
   }
 
   /* ---------------------------------------------------------------- KaTeX */

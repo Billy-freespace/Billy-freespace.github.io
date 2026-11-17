@@ -27,7 +27,8 @@ Página del alumno (/alumno.html?alumno=k7m2p9x4)  →  sus temas
 ```
 
 Cada página es un archivo HTML independiente y funciona abriendo los archivos con doble clic,
-sin servidor local.
+sin servidor local. Para trabajar con cambios frecuentes usa `node herramientas/servidor.mjs`
+(sirve el sitio sin caché; ver «Probar en tu computadora»).
 
 ---
 
@@ -67,7 +68,24 @@ reconoce cada ejercicio por su enunciado: si cambias el texto de un enunciado, e
 vuelve a «mostrar».
 
 > Los interruptores necesitan abrir el panel por HTTP: GitHub Pages o un servidor local
-> (`python3 -m http.server`). Abriéndolo con doble clic no puede leer los archivos de ejercicios.
+> (mejor `node herramientas/servidor.mjs`). Abriéndolo con doble clic no puede leer los archivos
+> de ejercicios.
+
+### Caché: por qué a veces no se ve el cambio
+
+Los navegadores guardan `soluciones.js` un rato. Para que eso no deje a un alumno con una versión
+vieja, cada página vuelve a pedir el archivo al servidor con una marca única y, si cambió, aplica
+los interruptores sola: **no hace falta borrar la caché, reabrir el navegador ni reiniciar nada**.
+
+Si estás probando en tu computadora, usa el servidor del proyecto para no pelearte con la caché:
+
+```bash
+node herramientas/servidor.mjs
+```
+
+Sirve el sitio en `http://127.0.0.1:8765/` con `Cache-Control: no-store`, así ves los cambios al
+recargar. En GitHub Pages los archivos pueden tardar unos minutos en actualizarse para quien ya
+los visitó; el chequeo automático lo resuelve en la siguiente carga de la página.
 
 ---
 
@@ -175,6 +193,8 @@ web-math-exercises/
 ├── plantillas/
 │   └── seccion.html        ← copia esto para crear una sección nueva
 └── herramientas/
+    ├── servidor.mjs        ← prueba local sin caché
+    ├── clave.mjs           ← genera el hash de la clave
     └── verificar.mjs       ← revisa que no falte nada (opcional)
 ```
 
@@ -344,6 +364,10 @@ desde un CDN. Si necesitas que funcione sin conexión, descarga KaTeX y cambia l
 
 **¿Puedo usar esto sin JavaScript?** No, la navegación, el renderizado de fórmulas y la clave
 lo necesitan.
+
+**¿Por qué no veo los cambios de `soluciones.js`?** El navegador guarda el archivo. Las páginas lo
+vuelven a pedir al cargar y se actualizan solas; si aun así no aparece, recarga con F5. Para
+trabajar sin caché usa `node herramientas/servidor.mjs`.
 
 **¿Puedo poner una clave distinta a cada alumno?** Se puede simular, pero en un sitio estático no
 aporta seguridad: los archivos siguen siendo públicos y la comprobación ocurre en el navegador.

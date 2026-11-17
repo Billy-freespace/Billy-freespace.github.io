@@ -253,14 +253,16 @@ $$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
         </ol>
         <p>
           El panel reconoce cada ejercicio por su enunciado: si cambias el texto de un enunciado,
-          ese interruptor vuelve a «mostrar». Los alumnos pueden tardar unos minutos en ver el
-          cambio (el navegador guarda los archivos en caché).
+          ese interruptor vuelve a «mostrar». Las páginas vuelven a leer <code>soluciones.js</code>
+          al cargarse, así que los alumnos no necesitan borrar la caché ni reabrir el navegador:
+          en la siguiente visita el cambio ya está aplicado.
         </p>
         <div class="aviso-clave">
           <strong>Los interruptores necesitan un servidor.</strong>
           <p>
             Si abres el panel con doble clic (<code>file://</code>) no puede leer los archivos de
-            ejercicios. Ábrelo desde GitHub Pages o con <code>python3 -m http.server</code>.
+            ejercicios. Ábrelo desde GitHub Pages o con <code>node herramientas/servidor.mjs</code>,
+            que sirve el sitio sin caché.
           </p>
         </div>
       </section>
@@ -286,8 +288,9 @@ $$ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} $$</code></pre>
             <code>https://tu-usuario.github.io/web-math-exercises/</code>.
           </li>
           <li>
-            Para verlo en tu computadora basta con abrir <code>index.html</code> con doble clic
-            (te pedirá la clave del panel), sin servidor.
+            Para verlo en tu computadora puedes abrir <code>index.html</code> con doble clic (te
+            pedirá la clave) o, mejor, ejecutar <code>node herramientas/servidor.mjs</code>: sirve
+            el sitio sin caché en <code>http://127.0.0.1:8765/</code>.
           </li>
         </ul>
       </section>

@@ -13,6 +13,9 @@
    Si un ejercicio no aparece aquí, su solución se muestra normalmente.
    Si cambias el texto de un enunciado, su clave cambia y el interruptor de ese
    ejercicio vuelve a «mostrar».
+
+   Se asigna a window.SOLUCIONES (y no a una constante) para que las páginas
+   puedan volver a leerlo desde el servidor y actualizarse sin borrar la caché.
    ========================================================================== */
 
-const SOLUCIONES = {};
+window.SOLUCIONES = {};
