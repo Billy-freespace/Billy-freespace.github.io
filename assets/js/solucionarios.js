@@ -49,7 +49,9 @@
         <p class="aviso-icono" aria-hidden="true">!</p>
         <h1>No se pudo leer soluciones.js</h1>
         <p>Revisa que el archivo <code>assets/js/soluciones.js</code> exista y tenga el formato que
-        genera este panel. Para evitar perder los interruptores, no se muestra nada más.</p>
+        genera este panel. Si empieza con <code>const SOLUCIONES</code>, es de una versión anterior:
+        descárgalo de nuevo desde aquí.</p>
+        <p>Para evitar perder los interruptores, no se muestra nada más.</p>
       </div>`;
       return;
     }
@@ -75,16 +77,19 @@
     const grupos = Sitio.alumnos
       .map((alumno) => ({
         alumno,
-        secciones: alumno.temas.flatMap((tema) =>
-          tema.niveles.map((nivel) => ({
+        temas: alumno.temas
+          .map((tema) => ({
             tema,
-            nivel,
-            clave: `${alumno.id}/${tema.id}/${nivel}`,
-            archivo: Sitio.rutaSeccion(alumno.id, tema.id, nivel),
+            prefijo: `${alumno.id}/${tema.id}/`,
+            niveles: tema.niveles.map((nivel) => ({
+              nivel,
+              clave: `${alumno.id}/${tema.id}/${nivel}`,
+              archivo: Sitio.rutaSeccion(alumno.id, tema.id, nivel),
+            })),
           }))
-        ),
+          .filter((bloque) => bloque.niveles.length),
       }))
-      .filter((grupo) => grupo.secciones.length);
+      .filter((grupo) => grupo.temas.length);
 
     raiz.innerHTML = `
       <header class="cabecera-vista">
@@ -109,21 +114,33 @@
         grupos.length
           ? grupos
               .map(
-                ({ alumno, secciones }) => `<section class="panel-grupo">
+                ({ alumno, temas }) => `<section class="panel-grupo">
                   <div class="panel-grupo-cabeza">
                     <h2>${Sitio.escapar(alumno.nombre)}</h2>
                     <span class="pildora">código ${Sitio.escapar(alumno.id)}</span>
                   </div>
-                  ${secciones
+                  ${temas
                     .map(
-                      (seccion) => `<details class="seccion-soluciones" data-clave="${seccion.clave}" data-archivo="${seccion.archivo}">
+                      ({ tema, prefijo, niveles }) => `<details class="tema-soluciones" data-prefijo="${prefijo}">
                         <summary>
-                          <span class="seccion-nombre"><strong>${Sitio.escapar(
-                            Sitio.NIVELES[seccion.nivel].etiqueta
-                          )}</strong> · ${Sitio.escapar(seccion.tema.titulo)}</span>
-                          <span class="seccion-estado">Ver ejercicios</span>
+                          <span class="tema-nombre">${Sitio.escapar(tema.titulo)}</span>
+                          <span class="tema-estado">${niveles.length} nivel${niveles.length === 1 ? "" : "es"}</span>
                         </summary>
-                        <div class="seccion-cuerpo"><p class="mensaje-soluciones">Abriendo…</p></div>
+                        <div class="tema-cuerpo">
+                          ${niveles
+                            .map(
+                              (seccion) => `<details class="seccion-soluciones" data-clave="${seccion.clave}" data-archivo="${seccion.archivo}">
+                                <summary>
+                                  <span class="seccion-nombre"><strong>${Sitio.escapar(
+                                    Sitio.NIVELES[seccion.nivel].etiqueta
+                                  )}</strong></span>
+                                  <span class="seccion-estado">Ver ejercicios</span>
+                                </summary>
+                                <div class="seccion-cuerpo"><p class="mensaje-soluciones">Abriendo…</p></div>
+                              </details>`
+                            )
+                            .join("")}
+                        </div>
                       </details>`
                     )
                     .join("")}
@@ -158,6 +175,23 @@
         if (resumen) {
           resumen.textContent = sinSolucion ? `${sinSolucion} sin solución` : "todas activas";
         }
+      });
+
+      /* Resumen de cada tema: cuántos niveles tiene y cuántas soluciones apagadas
+         hay en ellos (se cuenta desde el estado, aunque los niveles no se hayan
+         abierto todavía). */
+      raiz.querySelectorAll(".tema-soluciones").forEach((temaEl) => {
+        const prefijo = temaEl.dataset.prefijo;
+        const apagadasTema = Object.keys(estado).filter(
+          (clave) => estado[clave] === false && clave.startsWith(prefijo)
+        ).length;
+        const niveles = temaEl.querySelectorAll(".seccion-soluciones").length;
+        const etiqueta = temaEl.querySelector(".tema-estado");
+        if (!etiqueta) return;
+
+        etiqueta.textContent =
+          `${niveles} nivel${niveles === 1 ? "" : "es"}` +
+          (apagadasTema ? ` · ${apagadasTema} sin solución` : "");
       });
     }
 

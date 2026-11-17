@@ -1443,6 +1443,89 @@ a.tarjeta:hover .flecha {
   color: var(--tinta-2);
 }
 
+/* Tema dentro del panel de solucionarios */
+.tema-soluciones {
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  background: var(--tarjeta);
+  overflow: hidden;
+}
+
+.tema-soluciones > summary {
+  display: grid;
+  grid-template-columns: 1.35rem 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  list-style: none;
+  cursor: pointer;
+}
+
+.tema-soluciones > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tema-soluciones > summary::before {
+  content: "›";
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--tinta-3);
+  transition: transform var(--transicion);
+}
+
+.tema-soluciones[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.tema-soluciones[open] > summary {
+  border-bottom: 1px solid var(--linea);
+}
+
+.tema-nombre {
+  font-family: var(--fuente-titulo);
+  font-size: 1.16rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+.tema-estado {
+  font-size: 0.78rem;
+  color: var(--tinta-3);
+  text-align: right;
+}
+
+.tema-cuerpo {
+  padding: 0.2rem 0.9rem 0.4rem;
+  background: var(--papel-2);
+}
+
+/* Los niveles dentro de un tema van como filas, no como tarjetas aparte */
+.tema-cuerpo .seccion-soluciones {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--linea);
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.tema-cuerpo .seccion-soluciones:first-child {
+  border-top: 0;
+}
+
+.tema-cuerpo .seccion-soluciones > summary {
+  padding: 0.8rem 0.35rem;
+}
+
+.tema-cuerpo .seccion-cuerpo {
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  background: var(--tarjeta);
+}
+
 /* ----------------------------------------------------------- 9. Guía del profe */
 .pagina-guia main {
   padding-block: 2.5rem 4rem;
